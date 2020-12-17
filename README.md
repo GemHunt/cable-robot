@@ -1,2 +1,2 @@
 # cable-robot
-Cable robots with Real Sense L515 lidar
+Cable robots with RealSense L515 LiDAR
