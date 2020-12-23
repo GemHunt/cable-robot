@@ -17,11 +17,11 @@ void setup() {
   Serial.println("Motor test!");
 
   // turn on motor
-  motor1.setSpeed(200);
+  motor1.setSpeed(30);
   motor1.run(RELEASE);
-  motor2.setSpeed(200);
+  motor2.setSpeed(30);
   motor2.run(RELEASE);
-  motor3.setSpeed(200);
+  motor3.setSpeed(30);
   motor3.run(RELEASE);
 }
 
