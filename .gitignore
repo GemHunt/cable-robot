@@ -1,4 +1,5 @@
 /.idea
+steppercontrol/AccelStepper
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
