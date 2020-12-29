@@ -1,2 +1,7 @@
 # cable-robot
-Cable robots with RealSense L515 LiDAR
+A cable robot that works on a horizontal display. 
+
+Open the serial port:
+sudo usermod -a -G dialout $USER
+
+  

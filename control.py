@@ -14,10 +14,12 @@ def send_commends(ser, motors, commands):
             command_string = bytes(command_string)
             ser.write(command_string)  # write a string
 
+
 def test_dc_motors():
     motors = set()
     commands = []
-    ser = serial.Serial('COM5')  # open serial port
+    # ser = serial.Serial('COM5')  # open serial port
+    ser = serial.Serial('/dev/ttyUSB1')  # open serial port
     print(ser.name)  # check which port was really used
 
     while True:
