@@ -105,6 +105,13 @@ def show_background(height, width, scale, center_x, center_y, chessboard):
     cv2.moveWindow('background', 0, 2000)
 
 
+
+
+def get_serial():
+    port_name = get_port_name()
+    return  serial.Serial(port_name)
+
+
 def test_steppers():
     # ser = serial.Serial('COM5')
     image_id = 0
@@ -259,4 +266,4 @@ def test_steppers():
     #
 
 
-test_steppers()
+#test_steppers()

@@ -1,5 +1,5 @@
 #numpy==1.19.4
-
 pyserial~=3.5
 numpy~=1.19.4
-opencv-python~=4.4.0.46
+opencv-contrib-python
+imutils~=0.5.3
