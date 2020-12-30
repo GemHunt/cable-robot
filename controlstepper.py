@@ -98,6 +98,13 @@ def get_port_name():
             pass
 
 
+def show_background(height, width, scale, center_x, center_y, chessboard):
+    background = np.zeros((height, width), np.uint8)
+    background[center_y - 4 * scale:center_y + 4 * scale, center_x - 5 * scale:center_x + 5 * scale] = chessboard
+    cv2.imshow('background', background)
+    cv2.moveWindow('background', 0, 2000)
+
+
 def test_steppers():
     # ser = serial.Serial('COM5')
     image_id = 0
@@ -107,7 +114,8 @@ def test_steppers():
     print('Serial Port Used:', ser.name)  # check which port was really used
 
     # back/right/left motors
-    steps_start = np.array([3400, -19300, 2000])
+    # steps_start = np.array([3400, -19300, 2000])
+    steps_start = np.array([0, 0, 0])
     send_commands(ser, steps_start)
     # steps_start -= 100
 
@@ -120,30 +128,28 @@ def test_steppers():
 
     width = 1920
     height = 1000
-    background = np.zeros((height, width), np.uint8)
     center_x = int(width / 2)
     center_y = int(height / 2)
     # cv2.circle(background, (center_x, center_y), 50, 255, 1)
-    scale = 8
+    scale = 7
     chessboard = get_chessboard(scale)
-    margin = .2
+    margin = 0
     crop_x = int(width * margin)
     crop_y = int(height * margin)
     crop_width = width - crop_x * 2
     crop_height = height - crop_y * 2
 
-    background[center_y - 4 * scale:center_y + 4 * scale, center_x - 5 * scale:center_x + 5 * scale] = chessboard
-    cv2.imshow('background', background)
-    cv2.moveWindow('background', 0, 2000)
+    show_background(height, width, scale, center_x, center_y, chessboard)
+
     last_move_image_id = 0
     last_chessboard_details = np.array([0, 0, 0, 0])
     chessboard_details = np.array([0, 0, 0, 0])
-    center = 0
+    center = (0, 0)
     blur_factor = 0
     chessboard_size = 0
     while True:
         ret, frame = cap.read()
-        if image_id < 10:
+        if image_id < 40:
             image_id += 1
             continue
 
@@ -163,12 +169,26 @@ def test_steppers():
             chessboard_details = np.array([center[0], center[1], blur_factor, chessboard_size])
             movement = abs(chessboard_details - last_chessboard_details)
             movement = movement[0] + movement[1] + movement[3]
+
         cv2.imshow('Frame', frame)
         cv2.moveWindow('Frame', 2000, 1100)
         c = cv2.waitKey(1)
-        if movement < .2 and (image_id - last_move_image_id) > 3:
+        # print(image_id, center, blur_factor, steps_start, chessboard_size, movement)
+
+        center_x_offset = crop_width / 2 - center[0]
+        center_y_offset = crop_height / 2 - center[1]
+
+        if movement != 0 and movement < 10 and (image_id - last_move_image_id) > 3:
             print(image_id, center, blur_factor, steps_start, chessboard_size, movement)
-            steps_start += 10
+            print(center_x, center_y, crop_width / 2, crop_height / 2, center_x_offset, center_y_offset)
+            center_x += int(round(center_x_offset / 7, 0))
+            center_y += int(round(center_y_offset / 7, 0))
+            show_background(height, width, scale, center_x, center_y, chessboard)
+
+            steps_to_move = 30
+            steps_start[0] += int((chessboard_size - scale * 30 * 1.02) * steps_to_move)
+            steps_start[1] += steps_to_move
+            steps_start[2] += steps_to_move
             send_commands(ser, steps_start)
             last_move_image_id = image_id
         if c == 27:
